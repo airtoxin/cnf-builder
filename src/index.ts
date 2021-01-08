@@ -41,13 +41,13 @@ export class CNFBuilder {
   }
 
   public build(): string {
-    let cnf = "";
-    for (const clause of this.clauses) {
-      const variableLine = clause.map((v) =>
-        v.isNot ? `-${v.num}` : `${v.num}`
-      );
-      cnf += `${variableLine} 0\n`;
-    }
-    return cnf;
+    return this.clauses
+      .map((clause) =>
+        clause
+          .map((v) => (v.isNot ? `-${v.num}` : `${v.num}`))
+          .concat(["0"])
+          .join(" ")
+      )
+      .join("\n");
   }
 }
