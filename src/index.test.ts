@@ -21,6 +21,7 @@ describe("Builder", () => {
       builder.addClause(CNFClause.and([A, B.not, C]));
 
       expect(builder.build()).toEqual(dedent`
+        p cnf 3 3
         1 0
         -2 0
         3 0
@@ -34,6 +35,7 @@ describe("Builder", () => {
       builder.addClause(CNFClause.and([C, D, E.not]));
 
       expect(builder.build()).toEqual(dedent`
+        p cnf 5 6
         1 0
         -2 0
         3 0
@@ -51,6 +53,7 @@ describe("Builder", () => {
       builder.addClause(CNFClause.or([A, B.not, C]));
 
       expect(builder.build()).toEqual(dedent`
+        p cnf 3 1
         1 -2 3 0
       `);
     });
@@ -62,8 +65,35 @@ describe("Builder", () => {
       builder.addClause(CNFClause.or([C, D, E.not]));
 
       expect(builder.build()).toEqual(dedent`
+        p cnf 5 2
         1 -2 3 0
         3 4 -5 0
+      `);
+    });
+  });
+
+  describe("not clause", () => {
+    it("should build CNF format string from single clause", () => {
+      const { builder, A, B, C } = createDefaultContext();
+
+      builder.addClause(CNFClause.not([A, B.not, C]));
+
+      expect(builder.build()).toEqual(dedent`
+        p cnf 3 1
+        -1 2 -3 0
+      `);
+    });
+
+    it("should build CNF format string from multiple clauses", () => {
+      const { builder, A, B, C, D, E } = createDefaultContext();
+
+      builder.addClause(CNFClause.not([A, B.not, C]));
+      builder.addClause(CNFClause.not([C, D, E.not]));
+
+      expect(builder.build()).toEqual(dedent`
+        p cnf 5 2
+        -1 2 -3 0
+        -3 -4 5 0
       `);
     });
   });
@@ -75,6 +105,7 @@ describe("Builder", () => {
       builder.addClause(CNFClause.atMostOne([A, B.not, C]));
 
       expect(builder.build()).toEqual(dedent`
+        p cnf 3 3
         -1 2 0
         -1 -3 0
         2 -3 0
@@ -88,6 +119,7 @@ describe("Builder", () => {
       builder.addClause(CNFClause.atMostOne([C, D, E.not]));
 
       expect(builder.build()).toEqual(dedent`
+        p cnf 5 6
         -1 2 0
         -1 -3 0
         2 -3 0
@@ -105,6 +137,7 @@ describe("Builder", () => {
       builder.addClause(CNFClause.atLeastOne([A, B.not, C]));
 
       expect(builder.build()).toEqual(dedent`
+        p cnf 3 1
         1 -2 3 0
       `);
     });
@@ -116,6 +149,7 @@ describe("Builder", () => {
       builder.addClause(CNFClause.atLeastOne([C, D, E.not]));
 
       expect(builder.build()).toEqual(dedent`
+        p cnf 5 2
         1 -2 3 0
         3 4 -5 0
       `);
@@ -129,6 +163,7 @@ describe("Builder", () => {
       builder.addClause(CNFClause.exactlyOne([A, B.not, C]));
 
       expect(builder.build()).toEqual(dedent`
+        p cnf 3 4
         -1 2 0
         -1 -3 0
         2 -3 0
@@ -143,6 +178,7 @@ describe("Builder", () => {
       builder.addClause(CNFClause.exactlyOne([C, D, E.not]));
 
       expect(builder.build()).toEqual(dedent`
+        p cnf 5 8
         -1 2 0
         -1 -3 0
         2 -3 0
