@@ -51,10 +51,35 @@ export class CNFClause {
   }
 }
 
+export type CNFBuilderOptions = {
+  newline?: string;
+};
+
 export class CNFBuilder {
   private variableCount = 0;
   private variables: Set<Symbol> = new Set();
   private clauses: Clause[] = [];
+  private comments: string[] = [];
+
+  private readonly defaultOptions: Required<CNFBuilderOptions> = {
+    newline: "\n",
+  };
+
+  constructor(public readonly options?: CNFBuilderOptions) {}
+
+  private getOption<K extends keyof CNFBuilderOptions>(
+    name: K
+  ): Required<CNFBuilderOptions>[K] {
+    return this.options?.[name] ?? this.defaultOptions[name];
+  }
+
+  public addComments(comment: string | string[]): void {
+    const comments =
+      typeof comment === "string"
+        ? comment.split(this.getOption("newline"))
+        : comment;
+    this.comments.push(...comments);
+  }
 
   public addVariable(name: string): CNFVariable {
     this.variableCount += 1;
@@ -67,6 +92,7 @@ export class CNFBuilder {
   }
 
   public build(): string {
+    const commentLines = this.comments.map((c) => `c ${c}`);
     const headerLines = [`p cnf ${this.variables.size} ${this.clauses.length}`];
     const clauseLines = this.clauses.map((clause) =>
       clause
@@ -75,6 +101,8 @@ export class CNFBuilder {
         .join(" ")
     );
 
-    return [...headerLines, ...clauseLines].join("\n");
+    return [...commentLines, ...headerLines, ...clauseLines].join(
+      this.getOption("newline")
+    );
   }
 }

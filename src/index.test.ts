@@ -190,4 +190,41 @@ describe("Builder", () => {
       `);
     });
   });
+
+  describe("comment", () => {
+    it("should build CNF format string with comment", () => {
+      const { builder, A, B, C } = createDefaultContext();
+
+      builder.addClause(CNFClause.and([A, B.not, C]));
+      builder.addComments(dedent`
+        This is comment.
+        Newline.
+      `);
+
+      expect(builder.build()).toEqual(dedent`
+        c This is comment.
+        c Newline.
+        p cnf 3 3
+        1 0
+        -2 0
+        3 0
+      `);
+    });
+
+    it("should build CNF format string with comments", () => {
+      const { builder, A, B, C } = createDefaultContext();
+
+      builder.addClause(CNFClause.and([A, B.not, C]));
+      builder.addComments(["This is comment.", "Newline."]);
+
+      expect(builder.build()).toEqual(dedent`
+        c This is comment.
+        c Newline.
+        p cnf 3 3
+        1 0
+        -2 0
+        3 0
+      `);
+    });
+  });
 });
