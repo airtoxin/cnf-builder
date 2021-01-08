@@ -1,3 +1,5 @@
+import { combination } from "./utils";
+
 class CNFVariable {
   constructor(
     public readonly name: string,
@@ -21,6 +23,23 @@ export class CNFClause {
 
   static or(vars: CNFVariable[]): CNFClause {
     return new CNFClause([vars]);
+  }
+
+  static atMostOne(vars: CNFVariable[]): CNFClause {
+    return new CNFClause(
+      combination(vars).map((pair) => pair.map((v) => v.not))
+    );
+  }
+
+  static atLeastOne(vars: CNFVariable[]): CNFClause {
+    return CNFClause.or(vars);
+  }
+
+  static exactlyOne(vars: CNFVariable[]): CNFClause {
+    return new CNFClause([
+      ...CNFClause.atMostOne(vars).clauses,
+      ...CNFClause.atLeastOne(vars).clauses,
+    ]);
   }
 }
 
