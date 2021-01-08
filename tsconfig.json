@@ -15,10 +15,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noImplicitAny": true,
-    "rootDir": ".",
     "outDir": "lib",
     "composite": true
   },
-  "include": ["src"],
-  "exclude": ["**/*.test.*"]
+  "include": ["src"]
 }
