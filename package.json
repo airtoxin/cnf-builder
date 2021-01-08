@@ -1,0 +1,12 @@
+{
+  "name": "cnf-builder",
+  "version": "1.0.0",
+  "types": "lib/index.d.ts",
+  "main": "lib/index.js",
+  "repository": "git@github.com:airtoxin/cnf-builder.git",
+  "author": "airtoxin <airtoxin@icloud.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.1.3"
+  }
+}
