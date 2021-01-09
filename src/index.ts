@@ -44,6 +44,17 @@ export class CNFClause {
     return new CNFClause([vars.map((v) => v.not)]);
   }
 
+  static implies(p: CNFVariable, q: CNFVariable): CNFClause {
+    return CNFClause.or([p.not, q]);
+  }
+
+  static equals(p: CNFVariable, q: CNFVariable): CNFClause {
+    return new CNFClause([
+      ...CNFClause.implies(p, q).clauses,
+      ...CNFClause.implies(q, p).clauses,
+    ]);
+  }
+
   static atMostOne(vars: CNFVariable[]): CNFClause {
     return new CNFClause(
       combination(vars).map((pair) => pair.map((v) => v.not))
