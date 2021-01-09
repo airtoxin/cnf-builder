@@ -55,6 +55,12 @@ export class CNFClause {
     ]);
   }
 
+  static allEquals(vars: CNFVariable[]): CNFClause {
+    return new CNFClause(
+      combination(vars).flatMap((pair) => CNFClause.equals(...pair).clauses)
+    );
+  }
+
   static atMostOne(vars: CNFVariable[]): CNFClause {
     return new CNFClause(
       combination(vars).map((pair) => pair.map((v) => v.not))
@@ -79,6 +85,7 @@ export type CNFBuilderOptions = {
 
 export class CNFBuilder {
   // sequence=1 and sequence=2 used to AlwaysTrueVariable, AlwaysFalseVariable
+  // so nextVariableSeq starts with 3.
   private nextVariableSeq = 3;
   private variables: Set<Symbol> = new Set();
   private clauses: Clause[] = [];
